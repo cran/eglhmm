@@ -1,0 +1,22 @@
+
+# Export everything
+exportPattern("*")
+S3method(fitted,eglhmm)
+S3method(reglhmm,default)
+S3method(reglhmm,eglhmm)
+S3method(reorder,eglhmm)
+S3method(plot,eglhmm)
+S3method(print,kitty)
+S3method(print,RhoExpForm)
+S3method(print,RhoProbForm)
+S3method(anova,eglhmm)
+importFrom("stats", "as.formula", "coef", "dpois", "dummy.coef", "glm","lm",
+           "fitted","model.matrix", "na.omit", "nlm", "optim", "optimize",
+           "poisson", "predict", "quantile","qpois", "rpois", "runif", "var",
+           "weights","reorder","dbinom", "dnorm", "rbinom", "rnorm",
+           "binomial", "gaussian", "resid", "sd", "na.exclude","update")
+importFrom("stats", "terms", "xtabs","pchisq","qnorm","qbinom")
+importFrom("nnet","multinom")
+importFrom("grDevices", "dev.interactive", "dev.list")
+importFrom("graphics", "axis", "mtext", "par")
+useDynLib(eglhmm)

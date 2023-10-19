@@ -1,0 +1,142 @@
+\name{eglhmm-internal}
+\alias{binForm}
+\alias{bivdepPhi2Rho}
+\alias{bivdepRho2Phi}
+\alias{checkRho}
+\alias{checkTpm}
+\alias{checkYval}
+\alias{cnvrtRho}
+\alias{derivpi}
+\alias{derivp}
+\alias{doKeq1}
+\alias{dotzp}
+\alias{eglhmmBf}
+\alias{eglhmmEm}
+\alias{eglhmmLm}
+\alias{eglhmmBD}
+\alias{eglhmmBI}
+\alias{ell}
+\alias{expForm2p}
+\alias{fakeStates}
+\alias{ffun}
+\alias{fixTau}
+\alias{forGetHgl}
+\alias{getHgl}
+\alias{getIspd}
+\alias{getLL}
+\alias{getModComps}
+\alias{getMu}
+\alias{getTpm}
+\alias{initialise}
+\alias{initRho}
+\alias{llDiff}
+\alias{lmstep}
+\alias{logistic}
+\alias{logit}
+\alias{lse}
+\alias{misstify}
+\alias{msRho}
+\alias{nafracCalc}
+\alias{ordinal}
+\alias{ordinalsuffix}
+\alias{p2expForm}
+\alias{phi2Rho}
+\alias{ragg}
+\alias{recurse}
+\alias{reviseIspd}
+\alias{reviseModel}
+\alias{reviseRho}
+\alias{reviseSigma}
+\alias{reviseTau}
+\alias{reviseTheta}
+\alias{reviseTpm}
+\alias{revSigUnwtd}
+\alias{rho2Phi}
+\alias{saGetHgl}
+\alias{saSubGetHgl}
+\alias{sasubrf1}
+\alias{simMlt}
+\alias{simSngl}
+\alias{steepest}
+\title{Internal eglhmm functions.}
+\description{
+  Internal eglhmm functions.
+}
+\usage{
+binForm(fmla)
+bivdepPhi2Rho(phi,ijk)
+bivdepRho2Phi(Rho)
+checkRho(Rho,K,lvls,indep)
+checkTpm(tpm)
+checkYval(yval,Rho,type,warn=TRUE) 
+cnvrtRho(Rho)
+derivpi(ispd,tpm,npar,dp)
+derivp(npar,K,tau=NULL,expo=FALSE)
+doKeq1(data,fmla,distr,response,indep,size,nbot,ntop,bicm,nafrac)
+dotzp(tvec,K,inclTau,preSpecSigma)
+ell(phi,G)
+expForm2p(x)
+fakeStates(data,K,fmla)
+ffun(data,fmla,response,Rho,type)
+fixTau(tpm)
+forGetHgl(nd,theta,data,fmla,inclTau=TRUE,preSpecSigma=NULL)
+getHgl(nd,distr,theta,data,fmla,size,nbot,ntop)
+getIspd(theta,K)
+getLL(rp)
+getModComps(distr,fmla,data,theta,size,nbot,ntop)
+getMu(gmu,data,fmla)
+getTpm(theta,K)
+eglhmmBf(formula,data,distr,theta,size,nbot,ntop,
+         optimiser,optimMethod,nlmWarn,hessian,useAnalGrad,ca,
+         itmax,tolerance,verbose) 
+eglhmmEm(formula,data,distr,preSpecSigma,size,tau,zeta,phi,
+         mixture=FALSE,itmax=200,crit="CLL",tolerance=NULL,
+         digits=NULL,verbose=FALSE,checkDecrLL=TRUE)
+eglhmmLm(formula,data,distr,inclTau,preSpecSigma,size,nbot,ntop,
+         tau,zeta,phi,lmc=10,mixture=FALSE,itmax=200,crit,
+         tolerance=NULL,digits=NULL,verbose=FALSE) 
+eglhmmBD(data,par0,K,response,tolerance,digits,verbose,itmax,crit)
+eglhmmBI(data,par0,K,response,tolerance,digits,verbose,itmax,crit)
+initialise(distr,data,formula,lvls,par0,K,preSpecSigma,size,
+           nbot,ntop,breaks,randStart,indep)
+initRho(data,K,fmla,randStart,indep,lvls)
+llDiff(new.ll,old.ll,tolerance)
+lse(z)
+lmstep(theta,data,fmla,distr,size,nbot,ntop,lmc)
+logistic(eta)
+logit(mu)
+misstify(y,response,nafrac,fep=NULL)
+msRho(Rho0,G)
+nafracCalc(data,response)
+ordinal(k)
+ordinalsuffix(k)
+p2expForm(x)
+phi2Rho(phi,K,rhovals,preds)
+ragg(theta,data,fmla,distr,size=NULL,nbot=NULL,ntop=NULL,delta=0.01)
+recurse(fy,tpm,level=2L)
+reviseIspd(tpm)
+reviseModel(formula,data,distr,preSpecSigma,size)
+reviseRho(data,response,fmla,type)
+reviseSigma(r,weights,state)
+reviseTau(distr,fmla,data,theta,size,nbot,ntop)
+reviseTheta(tvec,theta,distr,fmla,data,size,nbot,ntop)
+reviseTpm(xisum,mixture)
+revSigUnwtd(phi,X,y,state)
+rho2Phi(Rho)
+saGetHgl(nd,theta,data,fmla,inclTau=TRUE,preSpecSigma=NULL)
+saSubGetHgl(nd,fy,gmu,sd,y,tdm,tpm,xispd,d1pi,d2pi,kstate,
+            npar,npt,nxc,d1p,d2p,alpha,alphw,a,b,aw,bw,xlc,
+            hess,xl) 
+sasubrf1(y,gmu,sd,fy,tdm,kstate,npar,npt,nxc,nd)
+simMlt(formula,response,distr,data,ispd,tpm,phi,Rho,
+       sigma,size,ntop,zeta,missFrac,fep)
+simSngl(distr,tpm,ispd,nt,mlp,Rho,yvals,datxl,fmla,response,
+        sig,size,ntop,zeta,mf,fep)
+steepest(tvec,theta,data,fmla,distr,size,nbot,ntop)
+}
+\details{
+  These functions are auxiliary and are not intended to be called
+  by the user.  In particular sasubrf1(), saGetHgl(), saSubGetHgl()
+  and forGetHgl() are for debugging purposes only
+}
+\keyword{internal}

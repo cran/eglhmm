@@ -1,0 +1,341 @@
+
+Version 0.0-1 09/03/2023
+
+Initial version created by a re-naming exercise applied to
+the previously existing package hmmRT.
+
+Version 0.0-2 09/03/2023
+
+Tweaked the code of misstify() to make it a little more
+coherent.  No substantive changes.
+
+Version 0.0-3 15/03/2023
+
+Added a function doKeq1(), to handle the iid (K=1) case.
+Re-ordered the code of eglhmm() a bit, accordingly.
+Made an adjustment to ffun() to accommodate the K=1 case
+in the bivariate independent context.
+
+15/03/2024
+
+Added an anova.eglhmm() method.
+
+16/03/2023
+
+Made more adjustments to ffun(); made adjustments to reviseRho()
+(allow for no weights, which is the setting when K=1), eglhmm()
+(make sure that K is actually available!), and to doKeq1() (omit
+the exclude=NULL in the calls to factor() in the indep setting;
+fixed up extraction of sigma in the Gaussian case; made gmu into
+a (1-column) matrix so as to use the structure induced by "X%*%phi"
+in the K > 1 setting --- this structure was vital to the proper
+functioning of getMu(); gave *names* to the mu and sigma entries
+of the rslt list in the Gaussian case --- these entries were getting
+lost and not appearing in the final returned value).
+
+Removed a spurious entry ("saderiv") from init.c.
+
+Version 0.0-4 20/03/2023
+
+Added the ion channel data sets provided by Nazim Khan.
+
+Version 0.0-5 25/03/2023
+
+Fixed a stupidity in breaker() --- I was taking the quantiles
+of unique(y) --- which is effectively taking the quantiles of
+(say) 0, 1, 2, ..., n.
+
+Unfortunately the fix seems to make things worse (!!!) in one
+instance --- for the binomial distribution with the lm (and the bfo and
+bfn) methods the algorithm converges to a log likelihood -1900.366
+which is much less than that obtained from the em method.  Using
+the em fit as the starting values for the other methods fixes this,
+but still it shouldn't happen.
+
+Took redundant K=1 code out of eglhmmBD.R and eglhmmBI.R.
+
+Tidied the procedure for checking for a (spurious?) decrease in
+the log likelihood in eglhmmBD.R, eglhmmBI.R and eglhmmEm.R.
+
+Tidied the returned structure in eglhmmBf.R, eglhmmLm.R and in eglhmmEm.R.
+
+Fixed the problem with the misalignment of y, fy and gamma, by reordering
+the cells in rd.df to appear in the order of the levels of "cf".
+
+Corrected a typo in eglhmm.R --- stopCritval should read stopCritVal.
+
+Fixed a bug that appeared in getMu() by re-specifying the rownames of
+rd.df.
+
+Put in a try() in lmstep() in an attempt to cope with the completely
+mysterious phenomenon of intermittently and inexplicably getting
+a singular instance of hessMod.
+
+26/03/2023
+
+Revised the starting value procedures: changed the way fake
+states were generated (so that breaker() no longer gets used).
+Now using theoretical quantiles from the relevant distribution.
+(This does not apply to the Multinom distribution.)  No substantive
+changes were made to the way that starting values are obtained in
+the Multinom setting, but the behaviour has changed, in a peculiar
+manner.  More investigation is needed.
+
+Version 0.0-6 27/03/2023.
+
+27/03/2023
+
+Fixed glitches in the nature of the formula in the K=1 setting; things
+went wrong if there were no "auxliary" predictors (whence no predictors
+at all).
+
+Fixed a glitch in getMu() (likewise things went wrong if there were
+no "auxliary" predictors (whence no predictors at all).
+
+28/03/2023
+
+Discovered flaws in the procedure for generating fake states (using
+"theoretical" distributions).  Implemented a new procedure (going back
+to using empirical quantiles, but doing things differently).
+
+29/03/2023
+
+Fixed a glitch in initRho();  restored the creation of "dumDat".
+Necessary since the Multinom distribution is excluded from the
+process of constructing fake states, whence there is no "state"
+column in the initial data set in the Multinom setting.
+
+Version 0.0-7 30/03/2023
+
+Removed the ion channel data sets, since these are inconveniently
+large.  These data sets have been made available in a separate
+(data only) package called "ionChannelData".
+
+Version 0.0-8 01/04/2023
+
+Added a vignette "derivatives".
+
+Version 0.0-9 05/04/2023
+
+Revised the vignette, and changed its name to "eglhmm".
+
+Version 0.0-10 14/05/2023
+
+Adjusted eglhmm() so that if the response is bivariate then "distr"
+is forcibly set equal to "Multinom" and "method" is forcibly set
+equal to "em". (Rather than having the code throw errors if "distr"
+and "method" are inappropriate for bivariate data.)
+
+Got rid of the warning that "formula" is ignored if the response
+is bivariate; the code now proceeds silently.
+
+Added to the examples, including adding a bivariate example.
+
+Version 0.0-11 20/05/2023
+
+Added (at Nazim's suggestion) the capability to fix the standard
+deviations (one for each state) of Gaussian distributions,
+at pre-specified values.  Did this by adding the argument
+"preSpecSigma", defaulting to NULL, to eglmmm().  If this argument
+is left NULL, the code precedes as before, if it is specified the
+entries of this argument are used as the Gaussian standard deviations
+and these standard deviations are not estimated.
+
+Adjusted the help files accordingly.
+
+Realised that reorder.eglhmm() had previously failed to reorder the
+"mu" component of the returned object; corrected this.
+
+Version 0.0-12 21/05/2023
+
+Fixed reorder.eglhmm() so that it does not try to compute the Hessian
+(or gradient) if these were not present in the object being reordered.
+(Which they won't be if the object was calculated using method="em".)
+Turns out that with big data sets (like unto the ion channel data sets)
+calculating the Hessian takes forever.
+
+Version 0.0-13
+
+Eliminated some spurious spaces in the ion channel data help file.
+(25/05/2023).
+
+Added a function getGradHess() to extract or calculate (if they
+have not been previously calculated) the gradient and Hessian of
+the model.  (25/05/2023).
+
+Modified lmstep.R to switch to steepest ascent if HessMod is
+singular.  Need to investigate further as to why this happens/
+how this can happen.
+
+Modified bcov() so that the "progress reports" are tidied.  Also, the
+covariance matrix produced has been provided with dimension names.
+(23/06/2023).
+
+Modified eglhmm() to return the call, so that update() can be used,
+thereby smoothing out the code in bcov().
+
+Added an argument "checkDecrLL" to eglhmm() so that checking for
+a decrease in the log likelihood (when the EM algorithm is used)
+is optional.  Set checkDecrLL=FALSE in the call to eglhmm (made via
+update) in bcov().  Decreases in the log likelhood thus get treated
+as if convergence has been achieved, thus reducing the number of
+data sets that have to be simulated and thereby speeding things up.
+Added a component "anomaly" to the object returned by eglhmm().
+(Appears only if the method is "em".)  Added a count of anomalies
+to the object returned by bcov().  (24/06/2023).
+
+Built and checked; put new version up on my web page.
+
+Version 0.0-14
+
+Did some mild tweaking of the help for eglhmm(), in respect of the
+information about "checkDecrLL" and "anomaly".
+
+Adjusted bcov() so that the returned value has a component "an.count"
+only if the method involved is "em".  Adjusted the help for bcov()
+accordingly.  (25/06/2023).
+
+Changed name of "getGradHess()" to "postHocGradHess()".
+
+Added argument inclTau to eglhmm() so that the transition probability
+matrix parameters "tau" may (or may not) be excluded from those that
+are estimated via the Hessian/gradient pardigm.  (The intent is that
+they should be estimated via the method of moments as is done when the
+EM algorithm is used.)
+
+Spent an eternity debugging the result.  Evetually got things to fly,
+and one result (in the default, inclTau=TRUE/preSpecSigma=NULL,
+setting) to agree with the result from version 0.0.13.  As of
+27/08/2023.
+
+Finally, after swatting a large number of minor bugs, got the package
+to build and check as of 30/08/2023.
+
+However it still does not run to completion on a Gaussian example
+(using data set "SCC4").  After 420 LM steps the algorithm switched
+to steepest ascent but there was then no change in the value of
+"tu".  Something's going wrong here.  Still (as of 02/09/2023)
+have not figured it out.
+
+Version 0.0-15.
+
+10/09/2023
+Fixed an egregious bug in reglhmm.default(); the cells in the simulated
+data were appearing in the wrong order (as determined by the factor
+interaction(cells), e.g. interaction(c("locn","depth"))).  This had
+the impact e.g. of swapping the locn coefficients with the depth
+coefficients.
+
+Package built and checked.
+
+Version 0.0-16.
+
+22/09/2023
+It appears that we get a singularity (sharp peak) in the likelihood
+surface when we try to fit a Gaussian model to Poisson(-like) data.
+Fitting a Gaussian to simulated Gaussian data seems to work.  The 'no
+change in the value of "tu"' phenomenon (see above) is appartently
+due to the singularity in the likelihood surface.  ("Steepest ascent"
+cannot climb further up the peak if we are already at the peak.)
+
+Revised postHocGradHess() to have a new argument inclTau=TRUE, so
+that the gradient and Hessian can be calculated with or without
+the vector of tau values being included in the parameters under
+consideration.
+
+Package built and checked.
+
+Version 0.0-17.
+
+03/10/2023
+
+The ion channel data produces anomalous Hessians (only the [1,1] entry
+of the Hessian for the "non-nuisance" parameters is non-zero). To investigate
+the reasons for this I tried to simulate data from a model fit, and
+discovered a glitch in reglhmm.eglhmm() --- the name of the response was
+hard-wired to be "y" rather than being taken from the name of the response
+in "formula".  Fixed and tested.
+
+Version 0.0-18
+
+07/10/2023
+
+Spotted the loony in the subroutine derivf.r which was causing the
+anomalous Hessians.  Basically a "return" should have been a "next"
+in a do loop.
+
+08/10/2023
+
+Got Hessians, gradients and log likelihoods from a reordered model
+which differed materially from those in the originally model.  There
+should be no such difference.
+
+10/10/2023
+
+Spotted the loony that was causing the difference.  I had neglected,
+in the code of reorder.eglhmm(), to reorder the "preSpecSigma"
+attributed of "theta".  Fixed.
+
+Added "standalone" R code, sasubrf1.R, saGetHgl.R, saSubGetHgl.R
+(and forGetHgl.R which is actually Fortran based) for calculating
+the Hessian, gradient and log likelihood, that I had written
+for debugging purposes, to the R directory of this package.
+Adjusted man/eglhmm-internal.Rd accordingly.
+
+11/10/2023
+
+Package built and checked.
+
+Version 0.0-19.
+
+12/10/2023
+
+Changed the name of a component of the value returned by eglhmm()
+when method="bf" from "Hessian" to "numHess" (for clarity).  Adjusted
+postHocGradHess() accordingly.  Likewise adjusted the help for eglhmm().
+
+13/10/2023
+Built, checked, installed, uploaded to my web page.
+
+Version 0.0-20
+
+15/10/2023
+
+Revised the file ionChannelData.Rd so that it simply refers to the
+file with the same name in the "ionChannelData" package.  The "usage"
+section has been eliminated, thereby avoiding the warning about "objects
+in documentation but not in code", issued by R CMD check --as-cran.
+
+Wrapped a lot of commands, in the examples section of eglhmm.Rd and
+postHocGradHess.Rd, in dontrun{ } so as to avoid excessively large
+execution times.
+
+Version 0.0-21
+
+16/10/2023
+
+Revised the help file for postHocGradHess(); fixed a screw-up in
+my use of \itemize{ }.
+
+Removed the Suggestion of ionChannelData (and the related
+Additional_Repositories field) from the DESCRIPTION file.  These are
+unnecessary and, for reasons that I don't understand, cause problems
+with the CRAN checking process.
+
+Version 0.0-22
+
+17/10/2023
+
+Made adjustments to the DESCRIPTION file and to various *.Rd files
+to satisfy CRAN requirements.
+
+Fixed a bug involving the "nms" vector in eglhmm().
+
+Version 0.0-23
+
+19/10/2023
+
+Documented anova.eglhmm() properly.
+
+Documented print.RhoExpForm(), print.RhoProbForm() and print.kitty()
+properly.
