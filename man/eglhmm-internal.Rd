@@ -139,4 +139,10 @@ steepest(tvec,theta,data,fmla,distr,size,nbot,ntop)
   by the user.  In particular sasubrf1(), saGetHgl(), saSubGetHgl()
   and forGetHgl() are for debugging purposes only
 }
+\value{
+  All of the functions listed above return values.  These
+  values vary widely in nature, and are passed on to the
+  relevant calling functions.  However these values are not
+  observed directly by users.
+}
 \keyword{internal}

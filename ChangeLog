@@ -339,3 +339,40 @@ Documented anova.eglhmm() properly.
 
 Documented print.RhoExpForm(), print.RhoProbForm() and print.kitty()
 properly.
+
+Version 0.0-24
+
+21/10/2023
+
+Added a "\value{ }" field (place-holder, in effect) to the help
+file eglhmm-internal.Rd.
+
+Version 0.0-24
+
+27/10/2023
+
+Got rid of unused argument xispd in bfun.r.
+Got rid of unused argument kt in derivf1.r.
+Got rid of unused arguments d1a and d1b in derivf5.r.
+Got rid of unused subroutine derivfdbd.
+Fixed an incorrect call to bfun() in recurse.r.
+
+Version 0.1-0
+
+29/10/2023
+
+Major shift.  Changed from using ratfor to Fortran 90.
+Manually re-coded all the *.r files to *.f90.  These latter files
+now live in the src directory.
+
+Version 0.1-1
+
+01/11/2023
+
+Fixed a stupid glitch in derivf.f90; call to derivf5 had wrong
+argument list!!!
+
+Fixed some defects in the help file eglhmm.Rd; changed examples to
+invoke the LM algorithm when using distr="Multinom" (this would have
+caught the stupid glitch referred to above).  Also eliminated the
+redundant specification of distr="Multinom" in the bivariate example.

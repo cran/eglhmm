@@ -573,13 +573,13 @@ eglhmm(formula = NULL, response = NULL, data,
                       tolerance=NULL)
         SCD4 <- SydColDisc[SydColDisc$locn \%in\% loc4,] 
         SCD4$locn <- factor(SCD4$locn) # Get rid of unused levels.
-        fitM.em  <- eglhmm(formula=y~ma.com+nh.com+bo.com,data=SCD4,
+        fitM.lm  <- eglhmm(formula=y~ma.com+nh.com+bo.com,data=SCD4,
                       cells=c("locn","depth"),distr="Multinom",K=2,
-                      method="em",verb=TRUE)
+                      verb=TRUE)
         xxx <- split(SCD4,f=SCD4$locn)
         X   <- with(xxx,data.frame(y.LngRf=LngRf$y,y.BondiE=BondiE$y,depth=LngRf$depth))
         fitBiv <- eglhmm(response=c("y.LngRf","y.BondiE"),data=X,K=2,cells="depth",
-                         distr="Multinom",indep=FALSE,verb=TRUE)
+                         indep=FALSE,verb=TRUE)
     }
 # See the help for ionChannelData for more examples involving the
 # ion channel data.
