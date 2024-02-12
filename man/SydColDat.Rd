@@ -9,10 +9,8 @@
    and Port Hacking ``100'' (controls) and Bondi Offshore, Malabar
    Offshore and North Head Offshore (outfalls).  At each location
    measurements were made at four depths: 0, 20, 40, and 60 meters.
-}
-\usage{
-   SydColCount
-   SydColDisc
+
+   The data sets are named \code{SydColCount} and \code{SydColDisc}.
 }
 \format{
   Data frames with 5432 observations on the following 6 variables.
@@ -57,11 +55,8 @@
     indicating whether the North Head sewage outfall had been commissioned.}
 
     \item{\code{bo.com}}{A factor with levels \code{no} and \code{yes},
-    i.ndicating whether the Bondi Offshore sewage outfall had been commissioned.}
+    indicating whether the Bondi Offshore sewage outfall had been commissioned.}
   }
-}
-\section{Oh for fuck's sake!!!}{
-Blah.
 }
 
 \details{

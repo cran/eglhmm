@@ -12,16 +12,16 @@ doKeq1 <- local({
                 sum(rslt)
     }
 
-function(data,fmla,distr,response,indep,size,nbot,ntop,bicm,nafrac) {
+function(data,fmla,distr,preSpecSigma,response,indep,size,nbot,ntop,bicm,nafrac) {
 # When K=1 fit an i.i.d. model.
-    lvls <- attr(data,"lvls")
+    rsplvls <- attr(data,"rsplvls")
     bivar <- length(response)==2
     if(bivar) {
         y1 <- response[1]
         y2 <- response[2]
         if(indep) {
-            X  <- factor(data[[y1]],levels=lvls[[1]])
-            Y  <- factor(data[[y2]],levels=lvls[[2]])
+            X  <- factor(data[[y1]],levels=rsplvls[[1]])
+            Y  <- factor(data[[y2]],levels=rsplvls[[2]])
             Rho <- vector("list",2)
             Rho[[1]] <- t(as.matrix(table(X)))
             Rho[[1]] <- Rho[[1]]/sum(Rho[[1]])
@@ -29,15 +29,15 @@ function(data,fmla,distr,response,indep,size,nbot,ntop,bicm,nafrac) {
             Rho[[2]] <- Rho[[2]]/sum(Rho[[2]])
             fy  <- ffun(data,response=response,Rho=Rho,type=2)
         } else {
-            X  <- factor(data[[y1]],levels=c(lvls[[1]],NA),exclude=NULL)
-            Y  <- factor(data[[y2]],levels=c(lvls[[2]],NA),exclude=NULL)
+            X  <- factor(data[[y1]],levels=c(rsplvls[[1]],NA),exclude=NULL)
+            Y  <- factor(data[[y2]],levels=c(rsplvls[[2]],NA),exclude=NULL)
             G    <- table(X,Y,useNA="always")
             m    <- nrow(G)
             n    <- ncol(G)
             Rho0 <- G[-m,-n]
             Rho0 <- Rho0/sum(Rho0)
             Rho0 <- array(Rho0,dim=c(dim(Rho0),1))
-            dnms <- c(lvls,list("1"))
+            dnms <- c(rsplvls,list("1"))
             dimnames(Rho0) <- dnms
             G    <- array(G,dim=c(dim(G),1))
             Rho  <- msRho(Rho0,G)
@@ -61,7 +61,11 @@ function(data,fmla,distr,response,indep,size,nbot,ntop,bicm,nafrac) {
         switch(EXPR=distr,
             Gaussian = {
                 gmu <- as.matrix(fitted(fit))
-                sigma <- sqrt(summary(fit)[["deviance"]]/summary(fit)[["df"]][2])
+                if(is.null(preSpecSigma)) {
+                    sigma <- sqrt(summary(fit)[["deviance"]]/summary(fit)[["df"]][2])
+                } else {
+                    sigma <- preSpecSigma
+                }
                 fy  <- dnorm(y,mean=gmu,sd=sigma)
                 mu  <- getMu(gmu,data,fmla)
                 rslt <- list(mu=mu,sigma=sigma,mean=gmu,sd=rep(sigma,length(gmu)),
@@ -70,12 +74,12 @@ function(data,fmla,distr,response,indep,size,nbot,ntop,bicm,nafrac) {
             Poisson = {
                 lambda <- fitted(fit)
                 fy <- dpois(y,lambda)
-                rslt <- list(phi=phi)
+                rslt <- list(lambda=lambda,phi=phi)
             },
             Binomial = {
                 p  <- fitted(fit)
                 fy <- dbinom(y,size=size,prob=p)
-                rslt <- list(phi=phi)
+                rslt <- list(p=p,phi=phi)
             },
             Dbd = {
                 X     <- model.matrix(fmla[-2],data=data)
@@ -87,14 +91,15 @@ function(data,fmla,distr,response,indep,size,nbot,ntop,bicm,nafrac) {
                 alpha <- X%*%phi[1:kp]
                 beta  <- X%*%phi[(kp+1):np]
                 fy    <- dbd::ddb(y,alpha,beta,ntop,nbot==0)
-                rslt  <- list(phi=phi)
+                rslt  <- list(alpha=alpha,phi=phi)
             },
             Multinom = {
                 data$state   <- factor(1)
                 data$weights <- 1
                 Rho  <- reviseRho(data,response,fmla,type=1)
-                fy   <- ffun(data,fmla=fmla,Rho=Rho,type=1)
-                rslt <- list(Rho=Rho)
+                phi  <- rho2Phi(Rho)
+                fy   <- ffun(data,fmla=fmla,response=NULL,Rho=Rho,type=1)
+                rslt <- list(Rho=Rho,phi=phi)
             }
         )
     }
@@ -106,7 +111,7 @@ function(data,fmla,distr,response,indep,size,nbot,ntop,bicm,nafrac) {
                 npar <- prod(dim(Rho))-1
             }
         } else {
-            npar <- (nrow(Rho) - 1)*(ncol(Rho)-1)
+            npar <- ncol(Rho)-1
         }
     } else {
         npar <- length(phi)
@@ -115,9 +120,11 @@ function(data,fmla,distr,response,indep,size,nbot,ntop,bicm,nafrac) {
     ll   <- sum(log(fy))
     AIC  <- -2*ll+2*npar
     BIC  <- -2*ll+bicm*npar
-    rslt <- c(rslt,list(log.like=ll,fy=fy,
+    theta <- list(tau=NULL,zeta=if(distr=="G") log(sigma) else NULL,phi=phi)
+    attr(theta,"inclTau") <- FALSE
+    rslt <- c(rslt,list(theta=theta,log.like=ll,fy=fy,
                         formula=fmla,distr=distr,bicm=bicm,npar=npar,
-                        AIC=AIC,BIC=BIC,missFrac=nafrac))
+                        AIC=AIC,BIC=BIC,data=data,missFrac=nafrac))
 
     rslt <- c(rslt,list(tpm=NA,ispd=NA,converged=NA,nstep=NA,par0=NA,
                         tolerance=NA,crit=NA,mixture=NA,method=NA))

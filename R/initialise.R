@@ -43,7 +43,7 @@ for(i in 1:2) {
 rslt
 }
 
-function(distr,data,formula,lvls,par0,K,preSpecSigma,size,nbot,ntop,
+function(distr,data,formula,rsplvls,par0,K,preSpecSigma,size,nbot,ntop,
          breaks,randStart,indep) {
 #
 # Set fmla (for parallelism with eglhmm{Bf,Em,Lm}.R).
@@ -102,11 +102,11 @@ if(is.null(par0)) {
 }
 
 # Check whether the response is univariate.
-if(inherits(lvls,"list")) {
-    if(length(lvls) == 2) {
+if(inherits(rsplvls,"list")) {
+    if(length(rsplvls) == 2) {
         univar <- FALSE
     } else { 
-        stop("If \"lvls\" is a list, it must be of length 2.\n")
+        stop("If \"rsplvls\" is a list, it must be of length 2.\n")
     }
 } else univar <- TRUE
 
@@ -116,7 +116,7 @@ if(univar & distr != "Multinom") {
 }
 
 # Calculate the exponential form "tau" of the tpm entries:
-if(K>1) tau <- fixTau(tpm)
+tau <- if(K > 1) fixTau(tpm) else NULL
 
 # Allow for random start for phi
 if(is.null(par0$phi) & randStart[["phi"]]) {
@@ -228,10 +228,10 @@ switch(EXPR=distr,
 
         if(is.null(par0$Rho)) {
             Rho <- initRho(data,K,fmla,randStart=randStart[["Rho"]],
-                           indep=indep,lvls=lvls)
+                           indep=indep,rsplvls=rsplvls)
         } else {
             Rho <- par0$Rho
-            ok  <- checkRho(par0$Rho,K,lvls,indep) # "ok" will always be TRUE;
+            ok  <- checkRho(par0$Rho,K,rsplvls,indep) # "ok" will always be TRUE;
                                                    # if it weren't, an error
                                                    # would have been thrown.
         }

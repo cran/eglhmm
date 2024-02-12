@@ -42,7 +42,7 @@ for(xl in lcf) {
         } else {
 	        mlp <- matrix(X%*%phi,ncol=K,byrow=TRUE)
         }
-        sig <- if(distr=="Gaussian") sigma else NULL
+        sig <- if(distr=="Gaussian") rep(sigma,length=K) else NULL
     }
     rslt[[xl]] <- simSngl(distr,tpm,ispd,nt,mlp,Rho,yvals,datxl,fmla=formula,
                           response,sig,size,ntop,zeta,mf=missFrac,fep)

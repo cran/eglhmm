@@ -44,9 +44,9 @@ if(x$distr=="Dbd") {
     phi[ib] <- bst.eff
 } else if(x$distr=="Multinom") {
     ynm  <- as.character(x$formula[2])
-    lvls <- levels(x$data[[ynm]])
-    nmbs <- suppressWarnings(as.numeric(lvls))
-    if(any(is.na(nmbs))) nmbs <- 1:length(lvls)
+    rsplvls <- levels(x$data[[ynm]])
+    nmbs <- suppressWarnings(as.numeric(rsplvls))
+    if(any(is.na(nmbs))) nmbs <- 1:length(rsplvls)
     pmat <- apply(x$Rho[1:K,],1,expForm2p)
     mns  <- apply(nmbs*pmat,2,sum)
     o    <- order(mns,decreasing=TRUE)

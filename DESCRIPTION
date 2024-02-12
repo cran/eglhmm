@@ -1,6 +1,6 @@
 Package: eglhmm
-Version: 0.1-1
-Date: 2023-11-01
+Version: 0.1-3
+Date: 2024-02-13
 Title: Extended Generalised Linear Hidden Markov Models
 Authors@R: c(person("Rolf", "Turner",
                     role = c("aut", "cre"),
@@ -20,7 +20,7 @@ ByteCompile: true
 NeedsCompilation: yes
 Depends: R (>= 3.5)
 License: GPL (>= 2)
-Packaged: 2023-10-31 21:22:30 UTC; rolf
+Packaged: 2024-02-12 22:54:16 UTC; rolf
 Author: Rolf Turner [aut, cre]
 Repository: CRAN
-Date/Publication: 2023-11-01 08:40:02 UTC
+Date/Publication: 2024-02-12 23:40:02 UTC

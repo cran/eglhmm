@@ -376,3 +376,61 @@ Fixed some defects in the help file eglhmm.Rd; changed examples to
 invoke the LM algorithm when using distr="Multinom" (this would have
 caught the stupid glitch referred to above).  Also eliminated the
 redundant specification of distr="Multinom" in the bivariate example.
+
+Version 0.1-2
+
+21/12/2023
+
+Added facilities for choosing the number of states via cross-validation.
+(Adapted material from the now-archived package HmmDbd.)
+
+07/01/2024
+
+Put in error traps so that eglhmm() will exit gracefully (rather than
+crashing with a segfault) if any of the data segments corresponding
+to one or more of the cells has length 0.  Actually it exits if
+any data segment has length less than 2.  We could probably cope
+with time series that have a single observation, but it would be
+fiddly and le jeu n'en vaut pas la chandelle.  Actually two is
+ridiculously small.
+
+08/01/2024
+
+Removed the spurious message, in respect of observing a decrease
+in the log likelihood, to the effect that if "distr" is "Multinom"
+then only the EM algorithm can be used, whence nothing else can
+be done.  This is simply not true; both the Levinberg-Marquardt
+algorithm and brute force work just fine.
+
+Fixed an extensive bug in crossval(), that reared its ugly little
+head when sampling of type 2 was being used.
+
+15/01/2024
+
+Fiddled with crossval(); fixed various hiccups relating to the
+K=1 setting.
+
+17/01/2024
+
+Removed "\usage" section from monoCyteSim.Rd.  It caused a
+warning from "R CMD check --as-cran" (since the software could
+not find the relevant data sets, given that monoCyteSim would
+not have been installed on the CRAN server.  This section served
+no useful purpose, and was unnecessary.
+
+Made minor adjustments to other data docmentation files.
+
+20/01/2024
+
+Uploaded to CRAN.
+
+Version 0.1-3
+
+13/02/2024
+
+Fixed a couple of ligatures that mucked up the processing of the
+help files (to *.pdf format.  These arose from copying and pasting
+from a pdf display.
+
+Explicitly, changed "inﬂation" to "inflation" and "ﬁxed" to
+"fixed" in weissData.Rd.

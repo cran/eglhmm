@@ -4,6 +4,11 @@ recurse <- function(fy,tpm,level=2L) {
 # given the transition probability matrix and the function values.
 #
 
+# Check for a possible anomaly in the lengths of the data segments.
+lns <- sapply(fy,length)
+if(any(lns < 2))
+    stop("At least one data segment is of length less than 2.\n")
+
 # Check on the value of "level".
 if(!level %in% (1L:2L))
     stop("The value of \"level\" must be either 1 or 2.\n")

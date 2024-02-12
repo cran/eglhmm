@@ -5,6 +5,13 @@ dimension :: alpha(kstate,n), beta(kstate,n), fy(kstate,n)
 dimension :: tpm(kstate,kstate), wrk(kstate,kstate), xi(kstate,kstate,n)
 dimension :: xisum(kstate,kstate)
 
+if(n < 2) then
+     call rexit("From xfun --- each series must contain at least two observations.")
+endif
+! We could probably cope with time series that have a single observation, but it
+! would be fiddly and le jeu n'en vaut pas la chandelle.  Actually two is
+! ridiculously small.
+
 one  = 1.d0
 zero = 0.d0
 dns2 = dble(kstate*kstate)

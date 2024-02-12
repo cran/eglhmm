@@ -1,6 +1,6 @@
 reviseRho <- function(data,response,fmla,type) {
 
-lvls  <- lapply(data[response],levels)
+rsplvls  <- lapply(data[response],levels)
 if(is.null(data$state)) { # Handle the K=1 case.
     noWts <- TRUE
 } else {
@@ -10,15 +10,15 @@ if(is.null(data$state)) { # Handle the K=1 case.
 }
 
 if(type==1) {
-    lvls  <- lvls[[1]]
+    rsplvls  <- rsplvls[[1]]
     preds <- attr(terms(fmla),"term.labels")
-    if(identical(preds,"state")) { # The simple case.
+    if(length(preds)==0 | identical(preds,"state")) { # The simple case.
         f    <- data[["state"]]
         ynm  <- as.character(fmla[2])
         y    <- split(data[[ynm]],f=f)[[1]]
         Rho  <- apply(gamma,1,function(x,y){xtabs(x ~ y)},y=y)
         Rho  <- t(t(Rho)/apply(Rho,2,sum))
-        rownames(Rho) <- lvls
+        rownames(Rho) <- rsplvls
         colnames(Rho) <- paste0("state",1:K)
         class(Rho)    <- c(class(Rho),"RhoProbForm")
         Rho           <- cnvrtRho(Rho)
@@ -37,8 +37,8 @@ if(type==1) {
         mc  <- coef(mnfit)
         btm <- min(mc)
         z   <- -300 - (abs(btm) - btm)/2
-        M   <- matrix(z,nrow=length(lvls),ncol=ncol(mc))
-        rownames(M) <- lvls
+        M   <- matrix(z,nrow=length(rsplvls),ncol=ncol(mc))
+        rownames(M) <- rsplvls
         M[rownames(mc),] <- mc
         M[1,] <- 0
 
@@ -71,7 +71,7 @@ if(type==2) {
         yj   <- split(data[[ynm]],f=data[["state"]])[[1]]
         Rhoj <- apply(gamma,1,function(x,y){xtabs(x ~ y)},y=yj)
 	Rhoj <- t(t(Rhoj)/apply(Rhoj,2,sum))
-        rownames(Rhoj) <- lvls[[j]]
+        rownames(Rhoj) <- rsplvls[[j]]
         colnames(Rhoj) <- paste0("state",1:K)
         class(Rhoj) <- c(class(Rhoj),"RhoProbForm")
         Rho[[j]]    <- cnvrtRho(Rhoj)
@@ -87,17 +87,17 @@ if(type==3) {
 # two variables that are emitted and where x_i and y_j are the
 # possible values of X and Y respectfully.
 # The tricky bit is handling what the contribution to Rho[i,j,k]
-# should be when there are missing values in the obsereved responses.
+# should be when there are missing values in the observed responses.
     s1   <- data$state == 1
     sdat <- split(data[s1,response],f=data[s1,"cf"])
     ym   <- as.matrix(do.call(rbind,sdat))
     aNA  <- any(is.na(as.vector(ym)))
-    Rho0 <- array(0,dim=c(sapply(lvls,length),K))
+    Rho0 <- array(0,dim=c(sapply(rsplvls,length),K))
     G    <- array(0,dim=dim(Rho0)+c(1,1,0))
     m    <- dim(G)[1]    
     n    <- dim(G)[2]    
-    X    <- factor(ym[,1],levels=c(lvls[[1]],NA),exclude=NULL)
-    Y    <- factor(ym[,2],levels=c(lvls[[2]],NA),exclude=NULL)
+    X    <- factor(ym[,1],levels=c(rsplvls[[1]],NA),exclude=NULL)
+    Y    <- factor(ym[,2],levels=c(rsplvls[[2]],NA),exclude=NULL)
     for(k in 1:K) {
         G[,,k] <- xtabs(gamma[k,] ~ X + Y,exclude=NULL)
         Rho0[,,k] <- G[-m,-n,k]
@@ -111,7 +111,7 @@ if(type==3) {
     } else {
         Rho <- Rho0
     }
-    dimnames(Rho) <- c(lvls,list(paste0("state",1:K)))
+    dimnames(Rho) <- c(rsplvls,list(paste0("state",1:K)))
 }
 Rho
 }

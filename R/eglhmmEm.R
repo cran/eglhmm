@@ -165,17 +165,10 @@ repeat{ # Swear again; i.e. recurse.
                          "  induced by the \"ispd\" parameters which is explained\n",
                          "  in the help. It is possible, although not certain, that\n",
                          "  the results from the penultimate EM step are indeed a\n",
-                         "  local maximum, or close to it. ")
-        if(distr=="Multinom") {
-            whinge <- paste0(whinge,"Since the distribution\n",
-                          "  is \"Multinom\", only the EM algorithm can be used, so\n",
-                          "  nothing else can be done.\n")
-        } else {
-            whinge <- paste0(whinge,"It is advisable to\n",
-                          "  check on this by applying one of the other methods\n",
-                          "  using the results from the penultimate EM step (as\n",
-                          "  returned by this function) as starting values.\n")
-        }
+                         "  local maximum, or close to it. It is advisable to\n",
+                         "  check on this by applying one of the other methods\n",
+                         "  using the results from the penultimate EM step (as\n",
+                         "  returned by this function) as starting values.\n")
         message(whinge)
         ll <- oldll
         modSpecs <- modSpecs.bak

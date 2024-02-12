@@ -38,15 +38,21 @@ getTpm <- function(theta,K) {
 # --- rather than being a shaganappi vector of (already updated)
 # non-redundant parameters.  Get the transition probability matrix
 # from the tau component of theta.
-    rawmat <- cbind(matrix(theta$tau,nrow=K),0)
-    tpm    <- t(apply(rawmat,1,expForm2p))
+    if(K > 1) {
+        rawmat <- cbind(matrix(theta$tau,nrow=K),0)
+        tpm    <- t(apply(rawmat,1,expForm2p))
+    } else tpm <- NA
     tpm
 }
 
 rho2Phi <- function(Rho) {
-    phi     <- t(Rho)[-ncol(Rho),]
-    nms     <- outer(rownames(phi),colnames(phi),
-                     function(a,b){paste(a,b,sep=".")})
+    phi     <- t(Rho)[-ncol(Rho),,drop=FALSE]
+    nms     <- if(nrow(Rho) > 1) {
+                   outer(rownames(phi),colnames(phi),
+                         function(a,b){paste(a,b,sep=".")})
+               } else {
+                   colnames(Rho)[-ncol(Rho)]
+               }
     phi     <- as.vector(phi)
     names(phi) <- as.vector(nms)
     phi

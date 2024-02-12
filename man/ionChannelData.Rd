@@ -16,7 +16,14 @@
 Time series of observations, made by means of patch clamps, of
 current in picoamps, across cell membranes.
 }
-\section{Note}{
+\section{Notes}{
+
+The data sets are named \code{ic25kHz_12_sgmnt1},
+\code{ic25kHz_13_sgmnt2}, \code{ic25kHz_14_sgmnt2},
+\code{ic25kHz_15_sgmnt2}, \code{ic50kHz_06_sgmnt2},
+\code{ic50kHz_08_sgmnt2}, \code{ic50kHz_09_sgmnt1} and
+\code{ic50kHz_10_sgmnt1}.
+
 These data are \bold{not} immediately available in the \code{eglhmm}
 package.  Their presence would cause the size of the \code{data}
 directory to exceed 4.5 Mb., which is unacceptably large.

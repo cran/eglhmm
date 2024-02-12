@@ -95,7 +95,7 @@ Bordeaux.
 fit.em <- eglhmm(y~locn+depth,data=SydColCount,distr="P",
                  cells=c("locn","depth"),K=2,method="em",verb=TRUE)
 gh.em  <- postHocGradHess(fit.em) # Calculates using inclTau=TRUE.
-\donttest{
+\dontrun{
     gh.em.noTau <- postHocGradHess(fit.em,inclTau=FALSE)
     fit.lm <- eglhmm(y~locn+depth,data=SydColCount,distr="P",
                      cells=c("locn","depth"),K=2,verb=TRUE)

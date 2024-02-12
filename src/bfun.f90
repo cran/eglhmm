@@ -4,6 +4,13 @@ implicit double precision(a-h,o-z)
 dimension :: wrk(kstate)
 dimension :: fy(kstate,n), tpm(kstate,kstate), beta(kstate,n)
 
+if(n < 2) then
+     call rexit("From bfun --- each series must contain at least two observations.")
+endif
+! We could probably cope with time series that have a single observation, but it
+! would be fiddly and le jeu n'en vaut pas la chandelle.  Actually two is
+! ridiculously small.
+
 ! Set some constants.
 one  = 1.d0
 zero = 0.d0

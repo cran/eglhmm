@@ -11,7 +11,7 @@
 eglhmm(formula = NULL, response = NULL, data,
       distr = c("Gaussian", "Poisson", "Binomial", "Dbd", "Multinom", "discnp"),
       inclTau=TRUE,preSpecSigma=NULL, indep = NULL, size = NULL, nbot = NULL, ntop = NULL,
-      cells = NULL, K = NULL, par0 = NULL, randStart = NULL,
+      cells = NULL, cf = "singlecell", K = NULL, par0 = NULL, randStart = NULL,
       method = c("lm", "em", "bf"), optimiser = c("optim", "nlm"),
       optimMethod = "BFGS", nlmWarn = FALSE, lmc = 10, tolerance = NULL,
       digits = NULL, verbose = FALSE, itmax = 200,
@@ -98,27 +98,44 @@ eglhmm(formula = NULL, response = NULL, data,
 }
   \item{cells}{A character vector giving the names of the factors
   (columns of the \code{data} data frame) which determine what the
-  \dQuote{cells} of the model are considered to be.  The cells correspond
-  to the combinations of levels of the factors named by \code{cells}.
+  \dQuote{cells} of the model are considered to be.  The cells
+  correspond to the combinations of levels of the factors named
+  by \code{cells}.  The sequences of observations from each of
+  the cells constitute a collection of independent time series,
+  all following the specified model.
+}
+  \item{cf}{A factor (\dQuote{cell factor}) specifying the cells
+  of the model.  If \code{cells} is not specified, then \code{cf}
+  must be.  If \code{cells} \emph{is} specified, then \code{cf}
+  is ignored.  the model.  If \code{cells} is not specified, then
+  in most (if not all?) circumstances, \code{cf} should be set
+  equal \code{factor(rep(1,nrow(data))}.  This the effect of making
+  the entire observation sequence equal to a single time series,
+  following the specified model.
 }
   \item{K}{
   Scalar integer specifying the number of states of the hidden Markov
   model in question.  If \code{K} is not specified and \code{par0}
   (see below) \emph{is} specified, and has a component \code{tpm},
-  then \code{K} is set equal to \code{nrow(tpm)}.  If \code{par0}
-  does not have a \code{tpm} component, an error is thrown.
-  An error is also thrown in this setting if \code{K} is specified
-  to a value different from \code{nrow(tpm)}.
+  then \code{K} is set equal to \code{nrow(tpm)}.  In this case,
+  if \code{par0} does not have a \code{tpm} component, an error
+  is thrown.  An error is also thrown in this setting if \code{K}
+  is specified to a value different from \code{nrow(tpm)}.
 }
   \item{par0}{
-  A list comprising starting values parameter estimates, to be used
-  by the various methods.  (See \code{method} below.)  This list
-  may have components \code{tpm} (an estimate of the transition
-  probability matrix), \code{phi} (a vector of estimates of
-  the coefficients in the linear predictor in the generalised
+  A list comprising starting values for the parameter estimates,
+  to be used by the various methods.  (See \code{method} below.)
+  This list may have components \code{tpm} (an estimate of the
+  transition probability matrix), \code{phi} (a vector of estimates
+  of the coefficients in the linear predictor in the generalised
   linear model) and \code{Rho} (a matrix, a list of two matrices,
-  or a three dimensional array) that specifyies the emission probabilities
-  when \code{distr} is \code{"Multinomial"}.
+  or a three dimensional array) that specifyies the emission
+  probabilities when \code{distr} is \code{"Multinomial"}.  Note that
+  \code{par0} may consist of an object of class \code{"eglhmm"}
+  (see below), i.e. a model previously fitted (perhaps without
+  achieving convergence), by \code{eglhmm()}.  This provides a
+  means whereby a fitting procedure, that failed to converge,
+  may be continued from where it left off.
 }
   \item{randStart}{
   Either a logical scalar or a list of three logical scalars
@@ -513,12 +530,12 @@ eglhmm(formula = NULL, response = NULL, data,
    It is a rearrangement of the \code{data} argument, with rows of
    that argument replicated \code{K} times (once for each state).
    A \code{state} column (factor) has been added, as has a column
-   \code{cf} (\dQuote{cell factor}), which indicates, by means
-   of a single factor, which cell of the model a given row of
-   \code{data} corresponds to, is added.  The aforementioned
-   rearrangement consists of ordering the cells in the order of
-   the levels of \code{cf}.  When \code{distr} is \code{"Multinom"}
-   the \code{"response"} variables are coerced into factors. }
+   \code{cf} (\dQuote{cell factor}), which indicates, by means of a
+   single factor, which cell of the model a given row of \code{data}
+   corresponds to.  The aforementioned rearrangement consists of
+   ordering the cells in the order of the levels of \code{cf}.
+   When \code{distr} is \code{"Multinom"} the \code{"response"}
+   variables are coerced into factors. }
 
   \item{bicm}{Numerical scalar.  The number by which \code{npar}
    is multiplied to form the \code{BIC} criterion.  It is
@@ -565,7 +582,7 @@ eglhmm(formula = NULL, response = NULL, data,
     rownames(SCC4) <- 1:nrow(SCC4)
     fitP.em <- eglhmm(y~locn+depth,data=SCC4,distr="P",cells=c("locn","depth"),
                     K=2,method="em",verb=TRUE)
-    \donttest{
+    \dontrun{
         fitP.lm <- eglhmm(y~locn+depth,data=SCC4,distr="P",cells=c("locn","depth"),
                         K=2,verb=TRUE)
         fitD.lm <- eglhmm(formula=y~ma.com+nh.com+bo.com,data=SCC4,nbot=0,ntop=11,

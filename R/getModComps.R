@@ -1,16 +1,16 @@
 getModComps <- function(distr,fmla,data,theta,size,nbot,ntop) {
-X    <- model.matrix(fmla[-2],data=data)
-K    <- length(levels(data$state))
-ynm  <- as.character(fmla[2])
-y    <- data[[ynm]]
-lvls <- attr(data,"lvls")
-nxr  <- nrow(X)
-phi  <- theta$phi
-zeta <- theta$zeta
-cmplst <- list(gmu=numeric(nxr),sd=numeric(nxr),
-               lambda=numeric(nxr),
-               p=numeric(nxr),
-               ashp=numeric(nxr),bshp=numeric(nxr))
+X       <- model.matrix(fmla[-2],data=data)
+K       <- if(is.null(data$state)) 1 else length(levels(data$state))
+ynm     <- as.character(fmla[2])
+y       <- data[[ynm]]
+rsplvls <- attr(data,"rsplvls")
+nxr     <- nrow(X)
+phi     <- theta$phi
+zeta    <- theta$zeta
+cmplst  <- list(gmu=numeric(nxr),sd=numeric(nxr),
+                lambda=numeric(nxr),
+                p=numeric(nxr),
+                ashp=numeric(nxr),bshp=numeric(nxr))
 switch(EXPR=distr,
     Gaussian = {
         gmu    <- X%*%phi
@@ -51,7 +51,7 @@ switch(EXPR=distr,
         fy     <- dbd::ddb(y,ashp,bshp,ntop,nbot==0)
     },
     Multinom = {
-        Rho    <- phi2Rho(phi,K,rhovals=lvls,preds=colnames(X))
+        Rho    <- phi2Rho(phi,K,rhovals=rsplvls,preds=colnames(X))
         cmplst <- list(Rho=Rho)
         fy     <- ffun(data,fmla=fmla,response=ynm,Rho=Rho,type=1)
     }

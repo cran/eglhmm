@@ -30,6 +30,7 @@
 \alias{initialise}
 \alias{initRho}
 \alias{llDiff}
+\alias{llKeq1}
 \alias{lmstep}
 \alias{logistic}
 \alias{logit}
@@ -39,6 +40,7 @@
 \alias{nafracCalc}
 \alias{ordinal}
 \alias{ordinalsuffix}
+\alias{origData}
 \alias{p2expForm}
 \alias{phi2Rho}
 \alias{ragg}
@@ -66,13 +68,13 @@
 binForm(fmla)
 bivdepPhi2Rho(phi,ijk)
 bivdepRho2Phi(Rho)
-checkRho(Rho,K,lvls,indep)
+checkRho(Rho,K,rsplvls,indep)
 checkTpm(tpm)
 checkYval(yval,Rho,type,warn=TRUE) 
 cnvrtRho(Rho)
 derivpi(ispd,tpm,npar,dp)
 derivp(npar,K,tau=NULL,expo=FALSE)
-doKeq1(data,fmla,distr,response,indep,size,nbot,ntop,bicm,nafrac)
+doKeq1(data,fmla,distr,preSpecSigma,response,indep,size,nbot,ntop,bicm,nafrac)
 dotzp(tvec,K,inclTau,preSpecSigma)
 ell(phi,G)
 expForm2p(x)
@@ -97,10 +99,11 @@ eglhmmLm(formula,data,distr,inclTau,preSpecSigma,size,nbot,ntop,
          tolerance=NULL,digits=NULL,verbose=FALSE) 
 eglhmmBD(data,par0,K,response,tolerance,digits,verbose,itmax,crit)
 eglhmmBI(data,par0,K,response,tolerance,digits,verbose,itmax,crit)
-initialise(distr,data,formula,lvls,par0,K,preSpecSigma,size,
+initialise(distr,data,formula,rsplvls,par0,K,preSpecSigma,size,
            nbot,ntop,breaks,randStart,indep)
-initRho(data,K,fmla,randStart,indep,lvls)
+initRho(data,K,fmla,randStart,indep,rsplvls)
 llDiff(new.ll,old.ll,tolerance)
+llKeq1(data,object)
 lse(z)
 lmstep(theta,data,fmla,distr,size,nbot,ntop,lmc)
 logistic(eta)
@@ -110,6 +113,7 @@ msRho(Rho0,G)
 nafracCalc(data,response)
 ordinal(k)
 ordinalsuffix(k)
+origData(rData)
 p2expForm(x)
 phi2Rho(phi,K,rhovals,preds)
 ragg(theta,data,fmla,distr,size=NULL,nbot=NULL,ntop=NULL,delta=0.01)

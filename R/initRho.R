@@ -1,22 +1,22 @@
 initRho <- local({
 
-grnp <- function(K,randStart,lvls) {
+grnp <- function(K,randStart,rsplvls) {
 # grnp <--> "generic Rho, no predictors" (other than state)
-nval <- length(lvls)
+nval <- length(rsplvls)
 if(randStart) {
     Rho <- matrix(runif(K*nval),K,nval)
 } else {
     Rho <- matrix(1:(nval*K),K,nval)
 }
 Rho           <- t(Rho/apply(Rho,1,sum))
-rownames(Rho) <- lvls
+rownames(Rho) <- rsplvls
 colnames(Rho) <- paste0("state",1:K)
 class(Rho)    <- c(class(Rho),"RhoProbForm")
 Rho           <- cnvrtRho(Rho)
 Rho
 }
 
-function(data,K,fmla,randStart,indep,lvls) {
+function(data,K,fmla,randStart,indep,rsplvls) {
 #
 # To get the probabilities of the observations (given the predictor
 # values) from this initial Rho or its updates, we form
@@ -38,26 +38,26 @@ function(data,K,fmla,randStart,indep,lvls) {
 if(K==1) return(NA)
 
 # Now do Rho ....
-nval   <- if(inherits(lvls,"list")) sapply(lvls,length) else length(lvls)
+nval   <- if(inherits(rsplvls,"list")) sapply(rsplvls,length) else length(rsplvls)
 univar <- length(nval) == 1
 if(univar) { # Univariate.
     dumDat <- cbind(data[1,],state=factor(1,levels=1:K))
     dumX   <- model.matrix(fmla,data=dumDat)
     ncX    <- ncol(dumX)
     if(ncX == K) {
-        Rho <- grnp(K,randStart,lvls)
+        Rho <- grnp(K,randStart,rsplvls)
     } else {
         if(randStart) {
             Rho <- matrix(rnorm((nval-1)*ncX),nrow=ncX)
             Rho <- cbind(Rho,0)
         } else {
-            Rho1 <- grnp(K,randStart,lvls) # K x nval
+            Rho1 <- grnp(K,randStart,rsplvls) # K x nval
             Rho2 <- matrix(0,ncol=nval,nrow=ncX-K)
             Rho  <- rbind(Rho1,Rho2)
         }
         class(Rho)    <- "RhoExpForm"
         rownames(Rho) <- colnames(dumX)
-        colnames(Rho) <- lvls
+        colnames(Rho) <- rsplvls
     }
 
 } else { # Bivariate.
@@ -66,7 +66,7 @@ if(univar) { # Univariate.
         for(i in 1:2) {
 # This gives Rho in "exponential form".  Is this what we want?
 # Yes it is; now!!!
-            Rho[[i]] <- grnp(K,randStart,lvls[[i]])
+            Rho[[i]] <- grnp(K,randStart,rsplvls[[i]])
         }
     } else {
         if(randStart) {
@@ -77,7 +77,7 @@ if(univar) { # Univariate.
         div <- apply(Rho,3,sum)
         Rho <- aperm(Rho,c(3,1,2))/div
         Rho <- aperm(Rho,c(2,3,1))
-        dimnames(Rho) <- c(lvls,list(1:K))
+        dimnames(Rho) <- c(rsplvls,list(1:K))
     }
 }
 Rho

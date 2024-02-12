@@ -64,7 +64,7 @@
 \seealso{ \code{\link{fitted.eglhmm}()} \code{\link{reglhmm}()}
           \code{\link{reglhmm.default}()} \code{\link{reglhmm.eglhmm}()} }
 \examples{
-    \donttest{ # Takes too long.
+    \dontrun{ # Takes too long.
         fitP <- eglhmm(y~locn+depth,data=SydColCount,distr="P",cells=c("locn","depth"),
                      K=2,contr="sum",verb=TRUE,itmax=300)
 	cvrP <- bcov(fitP)
